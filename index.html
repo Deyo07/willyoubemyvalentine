@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Valentine 💘</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===== RESET ===== */
+* {
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+body {
+  margin: 0;
+  height: 100vh;
+  background: radial-gradient(circle at top left, #ff9a9e 0, #ff5f8f 40%, #ffc371 100%);
+  background-size: 200% 200%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  color: #fff;
+}
+
+body::before,
+body::after {
+  content: "";
+  position: fixed;
+  inset: -20%;
+  background-image:
+    radial-gradient(circle at 20% 20%, rgba(255,255,255,0.18) 0, transparent 55%),
+    radial-gradient(circle at 80% 30%, rgba(255,192,203,0.18) 0, transparent 55%),
+    radial-gradient(circle at 10% 80%, rgba(255,255,255,0.12) 0, transparent 55%);
+  opacity: 0.55;
+  mix-blend-mode: screen;
+  pointer-events: none;
+  animation: floatBg 22s linear infinite;
+}
+
+body::after {
+  opacity: 0.35;
+  animation-duration: 32s;
+  animation-direction: reverse;
+}
+
+/* ===== INTRO ===== */
+#intro {
+  position: fixed;
+  inset: 0;
+  background: radial-gradient(circle at top, #1b0020 0, #000 60%, #1b0020 100%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.8rem;
+  z-index: 10;
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 18px rgba(255,105,180,0.9);
+  animation: introFade 3.5s forwards;
+}
+
+@keyframes introFade {
+  0%, 70% { opacity: 1; }
+  100% { opacity: 0; visibility: hidden; }
+}
+
+/* ===== LOCK ===== */
+#lock {
+  text-align: center;
+}
+
+#lock input {
+  padding: 14px;
+  width: 200px;
+  border-radius: 12px;
+  border: none;
+  font-size: 1rem;
+  text-align: center;
+}
+
+/* ===== CARD ===== */
+.card {
+  display: none;
+  background: rgba(255,255,255,0.18);
+  backdrop-filter: blur(22px);
+  border-radius: 26px;
+  padding: 36px;
+  width: 92%;
+  max-width: 420px;
+  text-align: center;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.35);
+  opacity: 0;
+  transform: translateY(24px) scale(0.96);
+  transition:
+    opacity 0.45s ease,
+    transform 0.45s ease,
+    box-shadow 0.45s ease;
+}
+
+.card.visible {
+  display: block;
+  transform: translateY(0) scale(1);
+  opacity: 1;
+}
+
+.card.visible:hover {
+  box-shadow: 0 40px 80px rgba(0,0,0,0.55);
+  transform: translateY(-6px) scale(1.02);
+}
+
+.card img {
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid rgba(255,255,255,0.6);
+  margin-bottom: 12px;
+}
+
+h1 {
+  font-size: 1.5rem;
+  margin-bottom: 8px;
+}
+
+p {
+  font-size: 0.95rem;
+  opacity: 0.95;
+}
+
+/* ===== BUTTONS ===== */
+.buttons {
+  position: relative;
+  height: 160px;
+  margin-top: 30px;
+}
+
+button {
+  padding: 14px 34px;
+  border-radius: 50px;
+  border: none;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+/* YES */
+#yes {
+  background: linear-gradient(135deg, #ffffff, #ffe0f0);
+  color: #ff5f8f;
+  font-weight: 700;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  animation: pulseGlow 2.4s ease-in-out infinite;
+}
+
+#yes:hover {
+  transform: scale(1.08) translateY(-1px);
+  box-shadow: 0 14px 32px rgba(0,0,0,0.3);
+}
+
+/* NO (hyper‑evasive) */
+#no {
+  position: absolute;
+  background: rgba(255,255,255,0.25);
+  color: #fff;
+  border: 2px solid rgba(255,255,255,0.45);
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  transition:
+    left 0.08s linear,
+    top 0.08s linear,
+    transform 0.08s linear;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.25);
+}
+
+/* ===== SUCCESS ===== */
+#success {
+  position: relative;
+  z-index: 4;
+}
+
+/* ===== PHOTO GALLERY (5 photos, after Yes) ===== */
+#photoGallery {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 2;
+  background: rgba(0,0,0,0.4);
+  align-items: center;
+  justify-content: center;
+}
+#photoGallery.visible {
+  display: flex;
+}
+.gallery-inner {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+.gallery-photo {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  opacity: 0;
+  transform: scale(1.05);
+  transition: opacity 1.2s ease, transform 8s ease-out;
+  pointer-events: none;
+}
+.gallery-photo.active {
+  opacity: 1;
+  transform: scale(1);
+  z-index: 1;
+}
+.gallery-photo.prev {
+  opacity: 0;
+  transform: scale(0.98);
+}
+@media (max-width: 480px) {
+  .gallery-photo { transition: opacity 1s ease, transform 6s ease-out; }
+}
+
+/* ===== HEARTS ===== */
+.heart {
+  position: fixed;
+  font-size: 20px;
+  animation: floatUp 4.2s ease-out forwards;
+  pointer-events: none;
+  filter: drop-shadow(0 0 6px rgba(255,255,255,0.8));
+}
+
+@keyframes floatUp {
+  0%   { transform: translate3d(-50%, 0, 0) scale(0.8); opacity: 0; }
+  20%  { opacity: 1; }
+  60%  { transform: translate3d(-50%, -60vh, 0) scale(1.1) rotate(-8deg); }
+  100% { transform: translate3d(-50%, -100vh, 0) scale(1.3) rotate(8deg); opacity: 0; }
+}
+
+@keyframes floatBg {
+  0%   { transform: translate3d(0, 0, 0); }
+  50%  { transform: translate3d(12px, -18px, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+@keyframes pulseGlow {
+  0%, 100% { box-shadow: 0 10px 25px rgba(0,0,0,0.2); transform: translateY(0) scale(1); }
+  50%      { box-shadow: 0 16px 40px rgba(255,255,255,0.55); transform: translateY(-2px) scale(1.04); }
+}
+
+@media (max-width: 480px) {
+  body {
+    align-items: flex-start;
+    padding-top: 40px;
+  }
+
+  .card {
+    padding: 24px 20px;
+    border-radius: 20px;
+  }
+
+  h1 {
+    font-size: 1.3rem;
+  }
+
+  p {
+    font-size: 0.9rem;
+  }
+
+  .buttons {
+    height: 120px;
+  }
+}
+
+@media (min-width: 768px) {
+  h1 {
+    font-size: 1.8rem;
+  }
+
+  .card {
+    max-width: 480px;
+  }
+}
+</style>
+</head>
+
+<body>
+
+<!-- INTRO -->
+<div id="intro">💖 to my beloved bebe</div>
+
+<!-- LOCK -->
+<div id="lock">
+  <h2>🔐 Enter the secret code</h2>
+  <input id="code" placeholder="••••••••">
+</div>
+
+<!-- MUSIC (file in folder: seasons.mp3.mp3) -->
+<audio id="music" loop preload="auto" autoplay muted>
+  <source src="seasons.mp3.mp3" type="audio/mpeg">
+</audio>
+
+<!-- CARD -->
+<div class="card" id="card">
+  <img src="photo1.jpg" alt="Us">
+  <h1>Will you be my Valentine,<br><span id="name"></span>? 💕</h1>
+  <p>📅 <span id="date"></span></p>
+
+  <div class="buttons" id="buttonArea">
+    <button id="yes">Yes 💖</button>
+    <button id="no">No</button>
+  </div>
+</div>
+
+<!-- SUCCESS -->
+<div class="card" id="success">
+  <h1>Yay! 💘</h1>
+  <p>see you bebe, ILOVEYOUUU!! suot tayo red both🥰🥰🥰🥰</p>
+</div>
+
+<!-- PHOTO GALLERY (5 photos of us) -->
+<div id="photoGallery" aria-hidden="true">
+  <div class="gallery-inner">
+    <img class="gallery-photo" src="photo1.jpg" alt="Us 1">
+    <img class="gallery-photo" src="photo2.jpg" alt="Us 2">
+    <img class="gallery-photo" src="photo3.jpg" alt="Us 3">
+    <img class="gallery-photo" src="photo4.jpg" alt="Us 4">
+    <img class="gallery-photo" src="photo5.jpg" alt="Us 5">
+  </div>
+</div>
+
+<script>
+/* ===== CONFIG ===== */
+const HER_NAME = "Bebe Ko";
+const SECRET_CODE = "iloveyou";
+const DATE_TIME = "February 14 ❤️";
+
+/* ===== ELEMENTS ===== */
+const lock = document.getElementById("lock");
+const card = document.getElementById("card");
+const success = document.getElementById("success");
+const music = document.getElementById("music");
+const noBtn = document.getElementById("no");
+const buttonArea = document.getElementById("buttonArea");
+
+/* ===== INIT ===== */
+document.getElementById("name").textContent = HER_NAME;
+document.getElementById("date").textContent = DATE_TIME;
+
+/* Start music on first tap/click (browsers require user gesture for sound) */
+function startMusicOnce() {
+  music.muted = false;
+  music.volume = 1;
+  music.play().catch(function() {});
+  document.removeEventListener("click", startMusicOnce);
+  document.removeEventListener("touchstart", startMusicOnce);
+}
+document.addEventListener("click", startMusicOnce);
+document.addEventListener("touchstart", startMusicOnce, { passive: true });
+
+/* Preload gallery photos so they show and transition smoothly */
+["photo1.jpg", "photo2.jpg", "photo3.jpg", "photo4.jpg", "photo5.jpg"].forEach(function(src) {
+  var img = new Image();
+  img.src = src;
+});
+
+/* ===== PASSCODE ===== */
+document.getElementById("code").addEventListener("keyup", e => {
+  if (e.target.value === SECRET_CODE) {
+    lock.style.display = "none";
+    card.classList.add("visible");
+    music.muted = false;
+    music.volume = 1;
+    music.play().catch(function() {});
+  }
+});
+
+/* ===== SMART NO-BUTTON EVASION (HARD MODE) ===== */
+function moveNoButton(e) {
+  const areaRect = buttonArea.getBoundingClientRect();
+  const btnRect = noBtn.getBoundingClientRect();
+
+  const margin = 10;
+  const maxX = areaRect.width - btnRect.width - margin;
+  const maxY = areaRect.height - btnRect.height - margin;
+
+  // Pointer position (if available)
+  let pointerX;
+  let pointerY;
+
+  if (e && "clientX" in e) {
+    pointerX = e.clientX;
+    pointerY = e.clientY;
+  } else if (e && e.touches && e.touches[0]) {
+    pointerX = e.touches[0].clientX;
+    pointerY = e.touches[0].clientY;
+  }
+
+  // Choose a position far away from the pointer
+  let x = margin + Math.random() * maxX;
+  let y = margin + Math.random() * maxY;
+
+  if (typeof pointerX === "number" && typeof pointerY === "number") {
+    const safeDistance = 140; // px
+    const pointerXInArea = pointerX - areaRect.left;
+    const pointerYInArea = pointerY - areaRect.top;
+
+    for (let i = 0; i < 12; i++) {
+      const centerX = x + btnRect.width / 2;
+      const centerY = y + btnRect.height / 2;
+      const dx = centerX - pointerXInArea;
+      const dy = centerY - pointerYInArea;
+      const dist = Math.hypot(dx, dy);
+
+      if (dist >= safeDistance) break;
+
+      x = margin + Math.random() * maxX;
+      y = margin + Math.random() * maxY;
+    }
+  }
+
+  noBtn.style.left = `${x}px`;
+  noBtn.style.top = `${y}px`;
+  noBtn.style.transform = `scale(${1 + Math.random() * 0.25}) rotate(${(Math.random() * 30 - 15)}deg)`;
+}
+
+// Initial random position once the card shows
+buttonArea.addEventListener("mouseenter", () => moveNoButton());
+
+// Works for mouse + touch – very hard to click
+noBtn.addEventListener("mouseenter", moveNoButton);
+noBtn.addEventListener("mousedown", moveNoButton);
+noBtn.addEventListener("touchstart", moveNoButton);
+noBtn.addEventListener("click", e => {
+  e.preventDefault();
+  moveNoButton(e);
+});
+
+/* ===== PHOTO GALLERY (5 photos, cool transitions) ===== */
+const photoGallery = document.getElementById("photoGallery");
+const galleryPhotos = document.querySelectorAll(".gallery-photo");
+const GALLERY_INTERVAL_MS = 3800;
+
+function startPhotoGallery() {
+  if (!photoGallery || !galleryPhotos.length) return;
+  photoGallery.classList.add("visible");
+  photoGallery.setAttribute("aria-hidden", "false");
+
+  let index = 0;
+  galleryPhotos.forEach((el, i) => {
+    el.classList.remove("active", "prev");
+    if (i === 0) el.classList.add("active");
+  });
+
+  const cycle = () => {
+    galleryPhotos[index].classList.remove("active");
+    galleryPhotos[index].classList.add("prev");
+    index = (index + 1) % galleryPhotos.length;
+    galleryPhotos[index].classList.remove("prev");
+    galleryPhotos[index].classList.add("active");
+  };
+
+  const galleryTimer = setInterval(cycle, GALLERY_INTERVAL_MS);
+  setTimeout(() => clearInterval(galleryTimer), 5 * GALLERY_INTERVAL_MS + 5000);
+}
+
+/* ===== YES ===== */
+document.getElementById("yes").onclick = () => {
+  card.classList.remove("visible");
+  success.classList.add("visible");
+
+  try {
+    music.play().catch(function() {});
+  } catch (err) {}
+
+  startPhotoGallery();
+
+  const heartVariants = ["💖", "💕", "💗", "💓"];
+
+  for (let i = 0; i < 40; i++) {
+    const h = document.createElement("div");
+    h.className = "heart";
+    h.innerHTML = heartVariants[Math.floor(Math.random() * heartVariants.length)];
+    const size = 18 + Math.random() * 26;
+    h.style.fontSize = `${size}px`;
+    h.style.left = Math.random() * 100 + "vw";
+    h.style.bottom = "-40px";
+    h.style.animationDuration = 3.2 + Math.random() * 2 + "s";
+    h.style.animationDelay = Math.random() * 0.5 + "s";
+    document.body.appendChild(h);
+    setTimeout(() => h.remove(), 6000);
+  }
+};
+</script>
+
+</body>
+</html>
